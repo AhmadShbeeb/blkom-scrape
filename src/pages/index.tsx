@@ -1,4 +1,4 @@
-import { Button, List, ScrollArea, Stack, TextInput } from '@mantine/core';
+import { Button, List, Paper, ScrollArea, Stack, TextInput } from '@mantine/core';
 import Head from 'next/head';
 import { useState } from 'react';
 import { api } from '~/utils/api';
@@ -35,17 +35,19 @@ export default function Home() {
           <h2>
             Enter Anime name from <a href='https://animeblkom.net/'>Anime Blkom</a>
           </h2>
-          <TextInput value={anime} onChange={event => setAnime(event.currentTarget.value)} />;
+          <TextInput value={anime} onChange={event => setAnime(event.currentTarget.value)} />
           <Button type='button' loading={loading} onClick={handleFetch}>
             Submit
           </Button>
-          <ScrollArea h={400}>
-            <List type='ordered'>
-              {animeData?.downloadLinks.map((downloadLink, idx) => (
-                <List.Item key={idx}>{downloadLink}</List.Item>
-              ))}
-            </List>
-          </ScrollArea>
+          <Paper shadow='lg' radius='md' p='md' withBorder>
+            <ScrollArea h={400}>
+              <List type='ordered'>
+                {animeData?.downloadLinks.map((downloadLink, idx) => (
+                  <List.Item key={idx}>{downloadLink}</List.Item>
+                ))}
+              </List>
+            </ScrollArea>
+          </Paper>
         </Stack>
       </main>
     </>
@@ -55,6 +57,5 @@ export default function Home() {
 // export const getServerSideProps: GetServerSideProps = async () => {
 //   const res = await fetch('https://api.github.com/repos/vercel/next.js');
 //   const repo = await res.json();
-
 //   return { props: { repo } };
 // };
