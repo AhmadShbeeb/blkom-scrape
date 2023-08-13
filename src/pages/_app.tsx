@@ -6,7 +6,7 @@ import { MantineProvider } from '@mantine/core';
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme: 'dark' }}>
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
     </MantineProvider>
   );
 };

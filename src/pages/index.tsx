@@ -1,10 +1,11 @@
-import { Button, List, Paper, ScrollArea, Stack, TextInput } from '@mantine/core';
+import { Button, CopyButton, Flex, List, Paper, ScrollArea, Stack, TextInput } from '@mantine/core';
+import { useInputState } from '@mantine/hooks';
 import Head from 'next/head';
 import { useState } from 'react';
 import { api } from '~/utils/api';
 
 export default function Home() {
-  const [anime, setAnime] = useState('');
+  const [anime, setAnime] = useInputState('');
   const [fetchLinks, setFetchLinks] = useState(false);
   const [loading, setLoading] = useState(false);
   const { data: animeData } = api.scrape.getSite.useQuery(
@@ -35,17 +36,28 @@ export default function Home() {
           <h2>
             Enter Anime name from <a href='https://animeblkom.net/'>Anime Blkom</a>
           </h2>
-          <TextInput value={anime} onChange={event => setAnime(event.currentTarget.value)} />
+          <TextInput value={anime} onChange={setAnime} />
           <Button type='button' loading={loading} onClick={handleFetch}>
             Submit
           </Button>
           <Paper shadow='lg' radius='md' p='md' withBorder>
             <ScrollArea h={400}>
-              <List type='ordered'>
-                {animeData?.downloadLinks.map((downloadLink, idx) => (
-                  <List.Item key={idx}>{downloadLink}</List.Item>
-                ))}
-              </List>
+              <Flex direction='row' justify='space-between'>
+                <List type='ordered'>
+                  {animeData?.downloadLinks.map((downloadLink, idx) => (
+                    <List.Item key={idx}>{downloadLink}</List.Item>
+                  ))}
+                </List>
+                {animeData && (
+                  <CopyButton value={JSON.stringify(animeData.downloadLinks)}>
+                    {({ copied, copy }) => (
+                      <Button color={copied ? 'teal' : 'blue'} onClick={copy}>
+                        {copied ? 'Copied links' : 'Copy links'}
+                      </Button>
+                    )}
+                  </CopyButton>
+                )}
+              </Flex>
             </ScrollArea>
           </Paper>
         </Stack>
