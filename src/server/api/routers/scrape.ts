@@ -40,14 +40,17 @@ export const scrapeRouter = createTRPCRouter({
       );
 
       const $main = cheerio.load(mainPage.body);
+      // const totalEpisodes = $main(
+      //   'body > div.content-wrapper > section.anime-info-section > div > div > div.pull-right.story-column > div > div:nth-child(6) > div > div.info-table > div:nth-child(1) > span.head'
+      // )
+      //   .next()
+      //   .text();
       const totalEpisodes = $main(
-        'body > div.content-wrapper > section.anime-info-section > div > div > div.pull-right.story-column > div > div:nth-child(6) > div > div.info-table > div:nth-child(1) > span.head'
-      )
-        .next()
-        .text();
+        'body > div.content-wrapper > section.anime-info-section > div > div > div.pull-right.list-column > div > ul'
+      ).children('li').length;
 
       const episodesUrl = Array.from(
-        { length: parseInt(totalEpisodes) },
+        { length: totalEpisodes },
         (_, i) => `https://animeblkom.net/watch/${input.anime}/${i + 1}`
       );
 
