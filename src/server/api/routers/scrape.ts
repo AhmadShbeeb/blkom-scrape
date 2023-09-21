@@ -28,7 +28,7 @@ const retry = {
 
 export const scrapeRouter = createTRPCRouter({
   getSite: publicProcedure
-    .input(z.object({ anime: z.string().toLowerCase(), quality: z.number().optional() }))
+    .input(z.object({ anime: z.string().toLowerCase(), quality: z.string().nullable() }))
     .query(async ({ input }) => {
       const mainPage = await got.get(
         'https://animeblkom.net/anime/' + `${input.anime}`
@@ -65,7 +65,7 @@ export const scrapeRouter = createTRPCRouter({
           });
           const $episode = cheerio.load(episodes.body);
           const episodeLink = $episode(
-            '#download > div > div.modal-body.direct-download > div.row.video-files > div > div > div.panel-body > a:nth-child(3)'
+            `#download > div > div.modal-body.direct-download > div.row.video-files > div > div > div.panel-body > a:nth-child(${input.quality})`
           ).attr('href');
           // return { episodeNumber: idx + 1, episodeLink };
           return episodeLink;

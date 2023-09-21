@@ -1,15 +1,24 @@
-import { Button, CopyButton, Flex, List, Paper, ScrollArea, Stack, TextInput } from '@mantine/core';
+import { Button, CopyButton, Flex, Group, List, Paper, ScrollArea, Select, Stack, TextInput } from '@mantine/core';
 import { useInputState } from '@mantine/hooks';
 import Head from 'next/head';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { api } from '~/utils/api';
+
+const QUALITIES = [
+  { value: '1', label: '360p' },
+  { value: '2', label: '480p' },
+  { value: '3', label: '720p' },
+  { value: '4', label: '1080p' },
+];
 
 export default function Home() {
   const [anime, setAnime] = useInputState('');
   const [fetchLinks, setFetchLinks] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [quality, setQuality] = useState<string | null>('3');
+
   const { data: animeData } = api.scrape.getSite.useQuery(
-    { anime },
+    { anime, quality },
     {
       enabled: fetchLinks,
       onSuccess() {
@@ -36,7 +45,10 @@ export default function Home() {
           <h2>
             Enter Anime name from <a href='https://animeblkom.net/'>Anime Blkom</a>
           </h2>
-          <TextInput value={anime} onChange={setAnime} />
+          <Flex justify='space-between'>
+            <TextInput w='90%' value={anime} onChange={setAnime} />
+            <Select w='120px' data={QUALITIES} value={quality} onChange={setQuality} />
+          </Flex>
           <Button type='button' loading={loading} onClick={handleFetch}>
             Submit
           </Button>
