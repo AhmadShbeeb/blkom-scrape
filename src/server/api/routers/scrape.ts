@@ -2,7 +2,7 @@ import * as cheerio from 'cheerio';
 import { gotScraping as got } from 'got-scraping';
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
-// import pretty from 'pretty';
+import pretty from 'pretty';
 
 const headerGeneratorOptions = {
   browsers: [
@@ -31,7 +31,7 @@ export const scrapeRouter = createTRPCRouter({
     .input(z.object({ anime: z.string().toLowerCase(), quality: z.string().nullable() }))
     .query(async ({ input }) => {
       const mainPage = await got.get(
-        'https://animeblkom.net/anime/' + `${input.anime}`
+        'https://animeblkom.com/anime/' + `${input.anime}`
         // {
         //   searchParams: { query: input.anime },
         //   headerGeneratorOptions,
@@ -45,6 +45,9 @@ export const scrapeRouter = createTRPCRouter({
       // )
       //   .next()
       //   .text();
+
+      // console.log(pretty($main.html()));
+
       const totalEpisodes = $main(
         'body > div.content-wrapper > section.anime-info-section > div > div > div.pull-right.list-column > div > ul'
       ).children('li').length;
@@ -64,6 +67,7 @@ export const scrapeRouter = createTRPCRouter({
             retry,
           });
           const $episode = cheerio.load(episodes.body);
+
           const episodeLink = $episode(
             `#download > div > div.modal-body.direct-download > div.row.video-files > div > div > div.panel-body > a:nth-child(${input.quality})`
           ).attr('href');
@@ -72,8 +76,6 @@ export const scrapeRouter = createTRPCRouter({
         })
       );
       // console.log('🚀 ~ file: scrape.ts:76 ~ .query ~ downloadLinks:', downloadLinks);
-
-      // console.log(pretty(ep.html()));
 
       return {
         downloadLinks,

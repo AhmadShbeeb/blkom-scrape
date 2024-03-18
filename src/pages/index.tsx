@@ -43,7 +43,8 @@ export default function Home() {
       <main>
         <Stack>
           <h2>
-            Enter Anime name from <a href='https://animeblkom.net/'>Anime Blkom</a>
+            Enter <span style={{ fontWeight: '1000' }}> Anime name </span> from{' '}
+            <a href='https://animeblkom.com/'>Anime Blkom</a>
           </h2>
           <Flex justify='space-between'>
             <TextInput w='90%' value={anime} onChange={setAnime} />
