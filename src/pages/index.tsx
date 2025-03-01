@@ -1,7 +1,7 @@
-import { Button, CopyButton, Flex, Group, List, Paper, ScrollArea, Select, Stack, TextInput } from '@mantine/core';
+import { Button, CopyButton, Flex, List, Paper, ScrollArea, Select, Stack, TextInput } from '@mantine/core';
 import { useInputState } from '@mantine/hooks';
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { api } from '~/utils/api';
 
 const QUALITIES = [

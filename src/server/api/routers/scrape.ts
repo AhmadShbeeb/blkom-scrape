@@ -23,21 +23,18 @@ const retry = {
   limit: 50,
   maxRetryAfter: 2,
   statusCodes: [408, 409, 413, 429, 500, 502, 503, 504, 521, 522, 524],
-  // calculateDelay: ({ computedValue }) => computedValue / 10,
+  calculateDelay: ({ computedValue }: { computedValue: number }) => computedValue / 10,
 };
 
 export const scrapeRouter = createTRPCRouter({
   getSite: publicProcedure
     .input(z.object({ anime: z.string().toLowerCase(), quality: z.string().nullable() }))
     .query(async ({ input }) => {
-      const mainPage = await got.get(
-        'https://animeblkom.com/anime/' + `${input.anime}`
-        // {
-        //   searchParams: { query: input.anime },
-        //   headerGeneratorOptions,
-        //   retry,
-        // }
-      );
+      const mainPage = await got.get('https://animeblkom.com/anime/' + `${input.anime}`, {
+        // searchParams: { query: input.anime },
+        headerGeneratorOptions,
+        retry,
+      });
 
       const $main = cheerio.load(mainPage.body);
       // const totalEpisodes = $main(
@@ -46,7 +43,7 @@ export const scrapeRouter = createTRPCRouter({
       //   .next()
       //   .text();
 
-      // console.log(pretty($main.html()));
+      console.log(pretty($main.html()));
 
       const totalEpisodes = $main(
         'body > div.content-wrapper > section.anime-info-section > div > div > div.pull-right.list-column > div > ul'
@@ -56,6 +53,7 @@ export const scrapeRouter = createTRPCRouter({
         { length: totalEpisodes },
         (_, i) => `https://animeblkom.net/watch/${input.anime}/${i + 1}`
       );
+      console.log('🚀 ~ .query ~ episodesUrl:', episodesUrl, totalEpisodes);
 
       // const episodesUrl = ['https://animeblkom.net/watch/nichijou/1', 'https://animeblkom.net/watch/nichijou/2'];
 
